@@ -44,7 +44,6 @@ public class PredictiveAnalyticsService {
         attrs.add(new Attribute("memoryUsage"));
         attrs.add(new Attribute("networkLatency"));
         
-        // Add class attribute (failure)
         ArrayList<String> classValues = new ArrayList<>();
         classValues.add("normal");
         classValues.add("failure");
@@ -60,18 +59,17 @@ public class PredictiveAnalyticsService {
 
             try {
                 Instances dataSet = new Instances("prediction", attributes, 0);
-                dataSet.setClassIndex(6); // Set class index to the last attribute
+                dataSet.setClassIndex(6);
 
-                double[] values = new double[7]; // 6 features + 1 class
+                double[] values = new double[7];
                 values[0] = metrics.getResponseTime();
                 values[1] = metrics.getErrorRate();
                 values[2] = metrics.getThroughput();
                 values[3] = metrics.getCpuUsage();
                 values[4] = metrics.getMemoryUsage();
                 values[5] = metrics.getNetworkLatency();
-                values[6] = 0.0; // Class value will be predicted
+                values[6] = 0.0;
 
-                // Normalize the values if we have statistics for this endpoint
                 if (means.containsKey(metrics.getEndpoint()) && stdDevs.containsKey(metrics.getEndpoint())) {
                     double[] endpointMeans = means.get(metrics.getEndpoint());
                     double[] endpointStdDevs = stdDevs.get(metrics.getEndpoint());
@@ -105,10 +103,10 @@ public class PredictiveAnalyticsService {
         MultilayerPerceptron model = new MultilayerPerceptron();
         try {
             model.setHiddenLayers("3");
-            model.setLearningRate(0.1); // Reduced learning rate for better stability
+            model.setLearningRate(0.1);
             model.setMomentum(0.2);
             model.setTrainingTime(1000);
-            model.setNormalizeAttributes(false); // We'll handle normalization ourselves
+            model.setNormalizeAttributes(false);
             model.setValidationSetSize(0);
         } catch (Exception e) {
             log.error("Error creating neural network model: ", e);
@@ -154,7 +152,6 @@ public class PredictiveAnalyticsService {
             Instances trainingSet = new Instances("training_data", attributes, 0);
             trainingSet.setClassIndex(6);
 
-            // First pass: collect statistics
             double[] sums = new double[6];
             double[] sumSquares = new double[6];
             int count = trainingData.size();
@@ -174,7 +171,6 @@ public class PredictiveAnalyticsService {
                 }
             }
 
-            // Calculate means and standard deviations
             double[] endpointMeans = new double[6];
             double[] endpointStdDevs = new double[6];
             for (int i = 0; i < 6; i++) {
@@ -183,11 +179,9 @@ public class PredictiveAnalyticsService {
                 endpointStdDevs[i] = Math.sqrt(variance);
             }
 
-            // Store statistics for this endpoint
             means.put(endpoint, endpointMeans);
             stdDevs.put(endpoint, endpointStdDevs);
 
-            // Second pass: create normalized training instances
             for (ApiMetrics metrics : trainingData) {
                 double[] values = new double[7];
                 values[0] = metrics.getResponseTime();
@@ -197,14 +191,12 @@ public class PredictiveAnalyticsService {
                 values[4] = metrics.getMemoryUsage();
                 values[5] = metrics.getNetworkLatency();
                 
-                // Normalize the values
                 for (int i = 0; i < 6; i++) {
                     if (endpointStdDevs[i] != 0) {
                         values[i] = (values[i] - endpointMeans[i]) / endpointStdDevs[i];
                     }
                 }
                 
-                // Determine class value based on metrics
                 boolean isFailure = metrics.getErrorRate() > ERROR_RATE_THRESHOLD ||
                                   metrics.getResponseTime() > RESPONSE_TIME_THRESHOLD ||
                                   metrics.getCpuUsage() > CPU_USAGE_THRESHOLD ||

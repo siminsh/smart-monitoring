@@ -22,7 +22,6 @@ public class ApiMonitoringService {
         request.setId(UUID.randomUUID().toString());
         request.setTimestamp(LocalDateTime.now());
         
-        // Convert ApiRequest to ApiMetrics
         ApiMetrics metrics = convertToMetrics(request);
         
         return anomalyDetectionService.detectAnomaly(metrics)

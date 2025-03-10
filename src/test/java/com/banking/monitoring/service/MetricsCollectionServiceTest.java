@@ -65,7 +65,6 @@ class MetricsCollectionServiceTest {
         long responseTime = 100L;
         boolean isError = false;
 
-        // Initialize counters for the endpoint
         requestCounters.put(endpoint, new AtomicInteger(0));
         errorCounters.put(endpoint, new AtomicInteger(0));
         totalResponseTime.put(endpoint, new AtomicLong(0));
@@ -83,7 +82,6 @@ class MetricsCollectionServiceTest {
         long responseTime = 100L;
         boolean isError = true;
 
-        // Initialize counters for the endpoint
         requestCounters.put(endpoint, new AtomicInteger(0));
         errorCounters.put(endpoint, new AtomicInteger(0));
         totalResponseTime.put(endpoint, new AtomicLong(0));
@@ -98,17 +96,14 @@ class MetricsCollectionServiceTest {
     @Test
     void collectMetrics_Success() {
         String endpoint = "/api/test";
-        // Initialize counters for the endpoint
         requestCounters.put(endpoint, new AtomicInteger(0));
         errorCounters.put(endpoint, new AtomicInteger(0));
         totalResponseTime.put(endpoint, new AtomicLong(0));
 
-        // Record some test data
         metricsCollectionService.recordRequest(endpoint, 100L, false);
         metricsCollectionService.recordRequest(endpoint, 200L, true);
         metricsCollectionService.recordRequest(endpoint, 300L, false);
 
-        // Set system metrics
         cpuUsage.put(endpoint, 50.0);
         memoryUsage.put(endpoint, 60.0);
         networkLatency.put(endpoint, 100.0);
@@ -129,7 +124,6 @@ class MetricsCollectionServiceTest {
 
         metricsCollectionService.collectMetrics();
 
-        // Verify counters are reset
         assertEquals(0, requestCounters.get(endpoint).get());
         assertEquals(0, errorCounters.get(endpoint).get());
         assertEquals(0, totalResponseTime.get(endpoint).get());
@@ -140,7 +134,6 @@ class MetricsCollectionServiceTest {
         String endpoint = "/api/test";
         metricsCollectionService.collectMetrics();
 
-        // Verify no metrics are generated for empty counters
         assertNull(requestCounters.get(endpoint));
         assertNull(errorCounters.get(endpoint));
         assertNull(totalResponseTime.get(endpoint));
@@ -149,7 +142,6 @@ class MetricsCollectionServiceTest {
     @Test
     void collectMetrics_WithPredictedFailure() {
         String endpoint = "/api/test";
-        // Initialize counters for the endpoint
         requestCounters.put(endpoint, new AtomicInteger(0));
         errorCounters.put(endpoint, new AtomicInteger(0));
         totalResponseTime.put(endpoint, new AtomicLong(0));
@@ -172,7 +164,6 @@ class MetricsCollectionServiceTest {
 
         metricsCollectionService.collectMetrics();
 
-        // Verify counters are reset
         assertEquals(0, requestCounters.get(endpoint).get());
         assertEquals(0, errorCounters.get(endpoint).get());
         assertEquals(0, totalResponseTime.get(endpoint).get());

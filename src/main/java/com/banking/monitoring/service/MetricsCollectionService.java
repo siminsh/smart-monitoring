@@ -33,7 +33,7 @@ public class MetricsCollectionService {
         totalResponseTime.computeIfAbsent(endpoint, k -> new AtomicLong(0)).addAndGet(responseTime);
     }
 
-    @Scheduled(fixedRate = 60000) // Collect metrics every minute
+    @Scheduled(fixedRate = 60000)
     public void collectMetrics() {
         Flux.fromIterable(requestCounters.keySet())
                 .flatMap(this::generateMetrics)
@@ -50,9 +50,8 @@ public class MetricsCollectionService {
             
             double avgResponseTime = requests > 0 ? (double) totalTime / requests : 0;
             double errorRate = requests > 0 ? (double) errors / requests : 0;
-            double throughput = requests / 60.0; // requests per second
+            double throughput = requests / 60.0;
 
-            // Reset counters
             requestCounters.getOrDefault(endpoint, new AtomicInteger(0)).set(0);
             errorCounters.getOrDefault(endpoint, new AtomicInteger(0)).set(0);
             totalResponseTime.getOrDefault(endpoint, new AtomicLong(0)).set(0);

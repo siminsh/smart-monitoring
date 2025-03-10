@@ -82,14 +82,12 @@ class PredictiveAnalyticsServiceTest {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        // Create training data
         trainingData = new ArrayList<>();
         trainingData.add(normalMetrics);
         trainingData.add(highErrorMetrics);
         trainingData.add(highResponseTimeMetrics);
         trainingData.add(highSystemLoadMetrics);
 
-        // Train the model for the test endpoint
         predictiveAnalyticsService.trainModel("/api/test", trainingData);
     }
 
@@ -155,7 +153,6 @@ class PredictiveAnalyticsServiceTest {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        // Train the model for the new endpoint
         predictiveAnalyticsService.trainModel("/api/new", trainingData);
 
         StepVerifier.create(predictiveAnalyticsService.predictFailure(newEndpointMetrics))
