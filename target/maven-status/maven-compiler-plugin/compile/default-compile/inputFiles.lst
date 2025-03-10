@@ -1,0 +1,10 @@
+C:\monitoring\src\main\java\com\banking\monitoring\ApiMonitoringApplication.java
+C:\monitoring\src\main\java\com\banking\monitoring\service\AnomalyDetectionService.java
+C:\monitoring\src\main\java\com\banking\monitoring\service\ApiMonitoringService.java
+C:\monitoring\src\main\java\com\banking\monitoring\controller\ApiMonitoringController.java
+C:\monitoring\src\main\java\com\banking\monitoring\controller\MetricsController.java
+C:\monitoring\src\main\java\com\banking\monitoring\model\ApiMetrics.java
+C:\monitoring\src\main\java\com\banking\monitoring\service\PredictiveAnalyticsService.java
+C:\monitoring\src\main\java\com\banking\monitoring\model\ApiRequest.java
+C:\monitoring\src\main\java\com\banking\monitoring\service\GenerativeAIService.java
+C:\monitoring\src\main\java\com\banking\monitoring\service\MetricsCollectionService.java
