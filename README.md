@@ -9,7 +9,6 @@ A sophisticated API monitoring system for banking applications that leverages ma
 - **Anomaly Detection**: Identify unusual patterns in API behavior
 - **AI-Powered Analysis**: Leverage OpenAI's GPT models for intelligent analysis
 - **Reactive Architecture**: Built with Spring WebFlux for high performance
-- **R2DBC Support**: Asynchronous database operations with PostgreSQL
 
 ## Prerequisites
 
