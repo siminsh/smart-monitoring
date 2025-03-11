@@ -129,10 +129,3 @@ The test suite includes:
 4. Push to the branch
 5. Create a Pull Request
 
-
-## Acknowledgments
-
-- Spring Boot team for the excellent framework
-- Weka team for the machine learning library
-- OpenAI for the GPT models
-- The open-source community for various dependencies 
