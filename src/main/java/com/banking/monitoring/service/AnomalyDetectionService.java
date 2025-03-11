@@ -13,8 +13,8 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 public class AnomalyDetectionService {
     private final Map<String, DescriptiveStatistics> responseTimeStats;
     private final Map<String, DescriptiveStatistics> errorRateStats;
-    private static final double Z_SCORE_THRESHOLD = 2.0; // 2 standard deviations
-    private static final int WINDOW_SIZE = 100; // Rolling window size
+    private static final double Z_SCORE_THRESHOLD = 2.0;
+    private static final int WINDOW_SIZE = 100;
     private static final double CPU_THRESHOLD = 80.0;
     private static final double MEMORY_THRESHOLD = 80.0;
     private static final double NETWORK_LATENCY_THRESHOLD = 200.0;
@@ -44,22 +44,19 @@ public class AnomalyDetectionService {
             boolean isAnomaly = false;
             List<String> reasons = new ArrayList<>();
 
-            // Check response time anomaly
             if (Math.abs(rtZScore) > Z_SCORE_THRESHOLD) {
                 isAnomaly = true;
                 reasons.add(String.format("response time (%.2fms) is %.1f standard deviations from normal",
                         responseTime, Math.abs(rtZScore)));
             }
 
-            // Check error rate anomaly
             if (Math.abs(errorRateZScore) > Z_SCORE_THRESHOLD) {
                 isAnomaly = true;
                 reasons.add(String.format("error rate (%.2f%%) is %.1f standard deviations from normal",
                         errorRate * 100, Math.abs(errorRateZScore)));
             }
 
-            // Check system metrics
-            if (metrics.getCpuUsage() > CPU_THRESHOLD || metrics.getMemoryUsage() > MEMORY_THRESHOLD || 
+            if (metrics.getCpuUsage() > CPU_THRESHOLD || metrics.getMemoryUsage() > MEMORY_THRESHOLD ||
                 metrics.getNetworkLatency() > NETWORK_LATENCY_THRESHOLD) {
                 isAnomaly = true;
                 List<String> systemReasons = new ArrayList<>();
@@ -93,12 +90,10 @@ public class AnomalyDetectionService {
 
     private double calculateZScore(double value, DescriptiveStatistics stats) {
         if (stats.getN() < 2) {
-            // For small sample sizes, use a simple threshold-based approach
             double mean = stats.getMean();
             if (mean == 0) {
                 return value > 0 ? 1.0 : 0.0;
             }
-            // For small samples, use a more lenient threshold
             return Math.abs((value - mean) / mean) > 0.5 ? 2.0 : 0.0;
         }
 
@@ -106,7 +101,6 @@ public class AnomalyDetectionService {
         double stdDev = stats.getStandardDeviation();
         
         if (Double.isNaN(stdDev) || stdDev == 0) {
-            // If no variation, use a threshold-based approach
             return Math.abs((value - mean) / mean) > 0.5 ? 2.0 : 0.0;
         }
         
